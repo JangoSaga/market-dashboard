@@ -1,3 +1,11 @@
+---
+portfolio: true
+title: Real-Time Market Data Dashboard
+tagline: Live market data streaming with paper trading simulator
+stack: [Next.js, TypeScript, WebSocket, Supabase, Tailwind, Zustand]
+featured: true
+---
+
 # Real-Time Market Data Dashboard — Project Plan
 
 **Goal:** Build one portfolio-defining project that proves full-stack + real-time systems capability, aligned with your Precize experience, in ~8-10 weeks of Wed/Thu sessions.
@@ -61,7 +69,7 @@
 **Key architectural decision to think through (and be ready to explain in interviews):**
 Where does the WebSocket connection live? Two options:
 - **Client-side connection**: Browser connects directly to the market data WebSocket. Simple, but every open tab makes its own connection, and you can't easily persist/replay data.
-- **Server-side relay**: Your Node backend maintains one WebSocket connection to the market feed, then broadcasts to connected clients via Socket.io or Supabase Realtime. More scalable, more "real" architecture, and gives you a strong interview answer about why you chose it.
+- **Server-side relay**: Your Node backend maintains one WebSocket connection to the market feed, then broadcasts to connected clients via Socket.io or Supabase Realtime. More scalable, more "real" architecture.
 
 **Recommendation: start client-side (Tier 1, get it working fast), then refactor to server-side relay as a Tier 2 stretch goal.** That refactor itself is a great "here's how I improved the architecture" story for interviews.
 
@@ -80,7 +88,7 @@ Where does the WebSocket connection live? Two options:
 | Market data | Binance public WebSocket (crypto, no API key needed) OR Finnhub (stocks, free tier with key) | Binance is easiest to start with — zero auth friction |
 | Deployment | Vercel (frontend) + Supabase (DB) | Free, matches your existing Vercel experience |
 
-**Data feed recommendation: start with Binance's public WebSocket for crypto.** No API key, no rate limits to worry about early on, and genuinely real-time. You can add a stock feed (Finnhub) later as a stretch goal if you want to broaden it beyond crypto.
+**Data feed recommendation: start with Binance's public WebSocket for crypto.** No API key, no rate limits to worry about early on, and genuinely real-time. You can add a stock feed (Finnhub) later as a stretch.
 
 ---
 
@@ -99,7 +107,7 @@ Where does the WebSocket connection live? Two options:
 | 9 (buffer) | Stretch: server-side WebSocket relay refactor, OR second data source, OR dark theme polish. |
 | 10 | Final deploy, record a 60-90 second demo video/GIF for your portfolio, write the case study writeup (see section 6). |
 
-**If you fall behind:** it's fine to skip Week 9 entirely and Week 10 alerts/history — Tier 1 + basic paper trading (through Week 6) is already a strong, complete, demo-able project. Don't let perfectionism stall shipping something.
+**If you fall behind:** it's fine to skip Week 9 entirely and Week 10 alerts/history — Tier 1 + basic paper trading (through Week 6) is already a strong, complete, demo-able project. Don't let perfectionism kill momentum.
 
 ---
 
@@ -108,7 +116,7 @@ Where does the WebSocket connection live? Two options:
 1. **A short case-study writeup** (README or portfolio page): what it does, why you built it, the architecture decision (client vs server WebSocket) and why, one real technical challenge you hit and how you solved it.
 2. **A live deployed link** — not just GitHub. Recruiters rarely clone repos; they click links.
 3. **A 60-90 second screen-recording demo** (Loom or similar) — embed it in your portfolio/README. Massively increases the chance anyone actually sees it work.
-4. **One well-rehearsed story about a real bug or design decision** — e.g., "handling WebSocket reconnection when the connection drops" or "why I chose to store P&L calculations server-side vs client-side." Interviewers care more about your reasoning than the feature list.
+4. **One well-rehearsed story about a real bug or design decision** — e.g., "handling WebSocket reconnection when the connection drops" or "why I chose to store P&L calculations server-side vs client-side."
 
 ---
 
