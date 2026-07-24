@@ -15,7 +15,7 @@ export default function Home() {
       </p>
       <div className="mt-8 flex gap-3">
         <Link
-          href="/login"
+          href="/signup"
           className="flex h-11 items-center rounded-md bg-emerald-600 px-6 text-sm font-semibold text-white transition hover:bg-emerald-500"
         >
           Get started

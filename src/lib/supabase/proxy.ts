@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import type { Database } from "@/lib/database.types";
 
 const PROTECTED_PREFIXES = ["/dashboard"];
-const AUTH_PAGES = ["/login"];
+const AUTH_PAGES = ["/login", "/signup"];
 
 /**
  * Refreshes the Supabase auth session on every request and enforces route
