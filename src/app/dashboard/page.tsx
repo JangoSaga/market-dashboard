@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 
+import { ConnectionStatus } from "@/components/market/connection-status";
+import { PriceTickerGrid } from "@/components/market/price-ticker-grid";
 import { createClient } from "@/lib/supabase/server";
 
 const inr = new Intl.NumberFormat("en-IN", {
@@ -28,12 +30,10 @@ export default async function DashboardPage() {
   const starting = profile?.starting_balance ?? 0;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
       <div>
         <h1 className="text-2xl font-semibold text-zinc-100">Dashboard</h1>
-        <p className="mt-1 text-sm text-zinc-400">
-          Signed in as {user.email}
-        </p>
+        <p className="mt-1 text-sm text-zinc-400">Signed in as {user.email}</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -51,9 +51,13 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-dashed border-zinc-800 bg-zinc-950/40 p-6 text-sm text-zinc-500">
-        Live prices, watchlist, and charts land here in the next phases.
-      </div>
+      <section className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-zinc-100">Live markets</h2>
+          <ConnectionStatus />
+        </div>
+        <PriceTickerGrid />
+      </section>
     </div>
   );
 }
