@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { formatPercent, formatPrice } from "@/lib/market/format";
@@ -52,8 +53,9 @@ function TickerCard({
         : "ring-0";
 
   return (
-    <div
-      className={`rounded-xl border border-zinc-800 bg-zinc-950/60 p-4 transition-all duration-300 ${flashClass}`}
+    <Link
+      href={`/dashboard/${meta.symbol}`}
+      className={`block rounded-xl border border-zinc-800 bg-zinc-950/60 p-4 transition-all duration-300 hover:border-zinc-700 ${flashClass}`}
     >
       <div className="flex items-center justify-between">
         <div>
@@ -93,6 +95,6 @@ function TickerCard({
           </p>
         )}
       </div>
-    </div>
+    </Link>
   );
 }
