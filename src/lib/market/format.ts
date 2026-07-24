@@ -15,3 +15,23 @@ export function formatPercent(pct: number): string {
   const sign = pct > 0 ? "+" : "";
   return `${sign}${pct.toFixed(2)}%`;
 }
+
+/**
+ * Formats a USDT money amount as USD. Binance prices are USDT-denominated
+ * (~1 USD), so the paper-trading wallet is tracked in the same unit.
+ */
+export function formatUsd(value: number): string {
+  if (!Number.isFinite(value)) return "—";
+  return value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+/** Formats a signed money amount, e.g. "+$12.30" / "-$4.50". */
+export function formatSignedUsd(value: number): string {
+  const sign = value > 0 ? "+" : value < 0 ? "-" : "";
+  return `${sign}${formatUsd(Math.abs(value))}`;
+}

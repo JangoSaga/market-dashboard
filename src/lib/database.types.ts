@@ -127,7 +127,27 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      execute_trade: {
+        Args: {
+          p_price: number
+          p_quantity: number
+          p_side: string
+          p_symbol: string
+        }
+        Returns: {
+          cash_balance: number
+          created_at: string
+          email: string | null
+          id: string
+          starting_balance: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       [_ in never]: never
