@@ -49,7 +49,7 @@ export function CreateAlertForm({ symbol }: { symbol?: string }) {
           min="0"
           required
           placeholder={livePrice ? formatPrice(livePrice) : "Target price"}
-          className={`${controlClass} flex-1 font-mono`}
+          className={`${controlClass} flex-1 font-mono w-4`}
         />
       </div>
 
