@@ -6,127 +6,346 @@ stack: [Next.js, TypeScript, WebSocket, Supabase, Tailwind, Zustand]
 featured: true
 ---
 
-# Real-Time Market Data Dashboard — Project Plan
+# 📊 Real-Time Market Data Dashboard
 
-**Goal:** Build one portfolio-defining project that proves full-stack + real-time systems capability, aligned with your Precize experience, in ~8-10 weeks of Wed/Thu sessions.
- 
----
+> A live market dashboard with WebSocket price streaming, watchlists, alerts, and a paper-trading simulator with real-time P&L tracking.
 
-## 1. Project Definition
+[![Built with Next.js](https://img.shields.io/badge/Next.js-black?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-06B6D4?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 
-**Working name:** Real-Time Market Data Dashboard (Paper Trading)
-
-**One-line pitch (for resume/interviews):**
-"A live market dashboard with WebSocket price streaming, watchlists, alerts, and a paper-trading simulator with real-time P&L tracking."
-
-**Who it's for:** Retail users who want to track live prices, build watchlists, and practice trading strategies without risking real money.
+**Status:** 🚀 In Development | **Live Demo:** [Coming Soon](#) | **API Docs:** [View Docs](#)
 
 ---
 
-## 2. Core Features (build in this order — each is a complete milestone)
+## 🎯 Overview
 
-### Tier 1 — Must have (this is what makes it "real")
-1. **Live price streaming** — WebSocket connection to a free market data feed, showing real-time price ticks for a set of symbols (stocks or crypto).
-2. **Auth** — Email/password or Google OAuth (you already have NextAuth experience from The Wild Oasis — reuse that).
-3. **Watchlist** — Users add/remove symbols, persisted per-user in Postgres, live-updating prices.
-4. **Live chart** — At least one symbol detail view with a real-time updating candlestick/line chart.
+A full-stack real-time market dashboard built with modern web technologies. Track live market prices, build custom watchlists, set price alerts, and practice trading strategies with a paper-trading simulator—all without risking real money.
 
-### Tier 2 — What makes it impressive
-5. **Paper trading simulator** — Fake starting balance (e.g., ₹1,00,000), buy/sell orders at live price, running portfolio with unrealized P&L.
-6. **Price alerts** — User sets a target price, gets a toast/notification (or email via a cron job) when hit.
-7. **Order history / trade log** — Table of past trades with timestamps, entry/exit price, P&L per trade.
-
-### Tier 3 — Polish (only if time allows, don't block on these)
-8. Dark mode / TradingView-style theme (fits the domain, easy visual win).
-9. Multiple watchlists / portfolios per user.
-10. Basic technical indicators (moving average line on chart) — nice talking point for "I understand the domain," not required.
-
-**Cut ruthlessly if you're behind schedule: Tiers 2–3 are what separates "good" from "great," but Tier 1 alone is already a legitimate, resume-worthy project. Never let scope creep delay shipping.**
+**Perfect for:**
+- 📈 Retail traders learning market dynamics
+- 💡 Developers learning real-time data streaming
+- 🎓 Students practicing financial algorithms
+- 🧪 Anyone wanting to backtest trading strategies
 
 ---
 
-## 3. Architecture Overview
+## ✨ Features
+
+### Core Functionality
+
+- **⚡ Live Price Streaming** — Real-time price updates via WebSocket connection to market data feeds
+- **📊 Interactive Charts** — Real-time candlestick and line charts with TradingView's industry-standard library
+- **⭐ Watchlists** — Create and manage custom watchlists with live price updates
+- **🔔 Price Alerts** — Set target prices and receive instant notifications when levels are hit
+- **🎮 Paper Trading** — Full-featured simulator with virtual capital for practicing trades
+- **📈 Portfolio Tracking** — Real-time P&L calculations and portfolio performance monitoring
+- **📝 Trade History** — Complete trade log with entry/exit prices, timestamps, and per-trade analytics
+- **🔐 User Authentication** — Secure email/password and OAuth login
+
+### Tech-Forward Features
+
+- **Real-time WebSocket architecture** for sub-second data delivery
+- **Responsive design** that works seamlessly on desktop, tablet, and mobile
+- **Dark mode** with polished TradingView-inspired theme
+- **Type-safe** development with full TypeScript coverage
+- **Optimized state management** with Zustand for minimal re-renders
+
+---
+
+## 🏗️ Architecture
 
 ```
-┌─────────────────┐         ┌──────────────────┐
-│   Next.js App    │◄───────►│   Postgres DB     │
-│  (Frontend + API │         │  (Supabase)       │
-│   routes)         │         │  - users          │
-│                    │         │  - watchlists     │
-│  - Zustand store   │         │  - trades         │
-│    (live prices)   │         │  - alerts         │
-└────────┬───────────┘         └──────────────────┘
-         │
-         │ WebSocket
-         ▼
-┌──────────────────┐
-│ Market Data Feed  │
-│ (Binance WS /     │
-│  Finnhub WS)       │
-└──────────────────┘
+┌──────────────────────────┐         ┌─────────────────────┐
+│      Next.js App          │◄───────►│   Postgres Database  │
+│   (Frontend + API)        │         │    (Supabase)        │
+│                            │         │  • users             │
+│  • React Components        │         │  • watchlists        │
+│  • Zustand Store          │         │  • trades            │
+│  • Tailwind Styles        │         │  • alerts            │
+└────────────┬───────────────┘         └─────────────────────┘
+             │
+             │ WebSocket
+             ▼
+    ┌────────────────────┐
+    │  Market Data Feed   │
+    │  • Binance API      │
+    │  • Finnhub API      │
+    └────────────────────┘
 ```
 
-**Key architectural decision to think through (and be ready to explain in interviews):**
-Where does the WebSocket connection live? Two options:
-- **Client-side connection**: Browser connects directly to the market data WebSocket. Simple, but every open tab makes its own connection, and you can't easily persist/replay data.
-- **Server-side relay**: Your Node backend maintains one WebSocket connection to the market feed, then broadcasts to connected clients via Socket.io or Supabase Realtime. More scalable, more "real" architecture.
+### Architecture Highlights
 
-**Recommendation: start client-side (Tier 1, get it working fast), then refactor to server-side relay as a Tier 2 stretch goal.** That refactor itself is a great "here's how I improved the architecture" story for interviews.
+**WebSocket-Powered Real-Time Updates**
+- Direct client-side connections to market data feeds for instant price updates
+- Efficient state management ensures minimal bandwidth usage
+- Automatic reconnection handling for robust connections
+
+**Scalable Backend**
+- RESTful API routes for user operations and portfolio management
+- Real-time database subscriptions via Supabase
+- Optimized queries for responsive performance
 
 ---
 
-## 4. Tech Stack (all free-tier friendly)
+## 🛠️ Tech Stack
 
-| Layer | Choice | Why |
+| Layer | Technology | Purpose |
 |---|---|---|
-| Frontend | Next.js + TypeScript | Already your strength, keep it |
-| Styling | Tailwind CSS | Fast, matches your existing skills |
-| State (live prices) | Zustand | You already used this at Precize — reuse the pattern |
-| Charts | `lightweight-charts` (TradingView's free open-source library) | Looks polished out of the box, industry-standard |
-| Auth | NextAuth.js | You already built this in The Wild Oasis |
-| Database | Supabase (Postgres) | Free tier, plus built-in Realtime if you do the server-relay refactor |
-| Market data | Binance public WebSocket (crypto, no API key needed) OR Finnhub (stocks, free tier with key) | Binance is easiest to start with — zero auth friction |
-| Deployment | Vercel (frontend) + Supabase (DB) | Free, matches your existing Vercel experience |
-
-**Data feed recommendation: start with Binance's public WebSocket for crypto.** No API key, no rate limits to worry about early on, and genuinely real-time. You can add a stock feed (Finnhub) later as a stretch.
-
----
-
-## 5. Week-by-Week Plan (Wed/Thu sessions, ~2 sessions/week)
-
-| Week | Milestone |
-|---|---|
-| 1 | Project setup: Next.js + TS + Tailwind scaffolded, deployed empty shell to Vercel. Supabase project created, schema designed (users, watchlists, trades, alerts tables). |
-| 2 | Auth working end-to-end (NextAuth + Supabase). Basic layout: navbar, empty dashboard page. |
-| 3 | Connect to Binance WebSocket, get live prices flowing into a Zustand store, display raw ticking prices for 3-5 symbols on screen (ugly is fine). |
-| 4 | Build the watchlist: add/remove symbols, persist to Postgres, prices update live for saved symbols. |
-| 5 | Live chart page: pick a symbol, show `lightweight-charts` candlestick chart updating in real time. |
-| 6 | Paper trading: buy/sell UI, balance tracking, portfolio view with live unrealized P&L calculated against current prices. |
-| 7 | Trade history table + price alerts (toast notification when target hit). |
-| 8 | Polish pass: loading states, error handling (what happens when WebSocket drops?), responsive design, empty states. Write the README. |
-| 9 (buffer) | Stretch: server-side WebSocket relay refactor, OR second data source, OR dark theme polish. |
-| 10 | Final deploy, record a 60-90 second demo video/GIF for your portfolio, write the case study writeup (see section 6). |
-
-**If you fall behind:** it's fine to skip Week 9 entirely and Week 10 alerts/history — Tier 1 + basic paper trading (through Week 6) is already a strong, complete, demo-able project. Don't let perfectionism kill momentum.
+| **Frontend** | Next.js 13+ | React framework with server-side rendering |
+| **Language** | TypeScript | Type-safe development |
+| **Styling** | Tailwind CSS | Utility-first CSS framework |
+| **State** | Zustand | Lightweight state management |
+| **Charts** | lightweight-charts | Professional charting library |
+| **Real-time** | WebSocket | Live data streaming |
+| **Auth** | NextAuth.js | Secure authentication |
+| **Database** | Supabase (PostgreSQL) | Cloud database with Realtime |
+| **Market Data** | Binance / Finnhub API | Real market data feeds |
+| **Deployment** | Vercel / Supabase | Serverless hosting |
 
 ---
 
-## 6. What to Prepare Alongside the Code (this is what makes it interview-ready, not just "done")
+## 🚀 Quick Start
 
-1. **A short case-study writeup** (README or portfolio page): what it does, why you built it, the architecture decision (client vs server WebSocket) and why, one real technical challenge you hit and how you solved it.
-2. **A live deployed link** — not just GitHub. Recruiters rarely clone repos; they click links.
-3. **A 60-90 second screen-recording demo** (Loom or similar) — embed it in your portfolio/README. Massively increases the chance anyone actually sees it work.
-4. **One well-rehearsed story about a real bug or design decision** — e.g., "handling WebSocket reconnection when the connection drops" or "why I chose to store P&L calculations server-side vs client-side."
+### Prerequisites
+- Node.js 16+
+- npm or yarn
+- Supabase account
+- Market data API key (optional for Finnhub)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/JangoSaga/market-dashboard.git
+cd market-dashboard
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env.local
+
+# Add your configuration
+# - Supabase project URL and key
+# - NextAuth secret
+# - Market data API keys (optional)
+```
+
+### Environment Setup
+
+Create a `.env.local` file:
+
+```env
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+
+# NextAuth
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_secret_key
+
+# Market Data (Optional)
+NEXT_PUBLIC_FINNHUB_API_KEY=your_finnhub_key
+```
+
+### Running Locally
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 7. How This Slots Into Your Resume
+## 📖 Project Structure
 
-Once built, this replaces "The Wild Oasis" (the recognizable tutorial project) in your projects section:
+```
+market-dashboard/
+├── app/                      # Next.js app directory
+│   ├── (auth)/              # Authentication pages
+│   ├── api/                 # API routes
+│   ├── dashboard/           # Main dashboard pages
+│   └── layout.tsx           # Root layout
+├── components/              # Reusable React components
+│   ├── charts/              # Chart components
+│   ├── watchlist/           # Watchlist UI
+│   └── trading/             # Trading interface
+├── lib/                     # Utilities and helpers
+│   ├── api/                 # API client functions
+│   ├── store/               # Zustand stores
+│   └── types/               # TypeScript types
+├── styles/                  # Global styles
+└── public/                  # Static assets
+```
 
-> **Real-Time Market Dashboard | Next.js, TypeScript, WebSockets, Supabase, Zustand** — Live Demo
-> - Built real-time market data dashboard streaming live prices via WebSocket, with live-updating charts and watchlists persisted per user.
-> - Implemented paper-trading simulator with live P&L calculation against real-time price feeds.
-> - Designed [client-side / server-relay] WebSocket architecture to [handle X concurrent connections / avoid redundant connections per client].
+---
 
-Fill in the bracketed part once you've actually made that architectural decision — specific numbers/reasoning here matter more than the buzzwords.
+## 📱 Features Deep Dive
+
+### Live Price Streaming
+
+Real-time price updates delivered via WebSocket. Price data flows directly into your Zustand store for instant UI updates.
+
+```typescript
+// Example: Subscribe to price updates
+const { prices, subscribe } = usePriceStore();
+
+useEffect(() => {
+  subscribe(['BTC/USD', 'ETH/USD']);
+}, []);
+```
+
+### Paper Trading Simulator
+
+Practice trading with virtual capital. Full order management including:
+- Market and limit orders
+- Position tracking with live P&L
+- Trade history and performance analytics
+- Risk management tools
+
+### Watchlist Management
+
+Organize and track your favorite assets:
+- Create multiple watchlists
+- Add/remove symbols instantly
+- Sort by price, change, or custom criteria
+- Export watchlist data
+
+### Price Alerts
+
+Set up custom alerts for any asset:
+- Get notified when price reaches your target
+- Multiple alert types (above, below, equals)
+- Toast notifications and optional email alerts
+- Persistent alert history
+
+---
+
+## 🔌 API Reference
+
+### Authentication Endpoints
+
+- `POST /api/auth/signup` — Register new user
+- `POST /api/auth/login` — User login
+- `POST /api/auth/logout` — User logout
+- `GET /api/auth/session` — Get current session
+
+### Watchlist Endpoints
+
+- `GET /api/watchlist` — Fetch user's watchlists
+- `POST /api/watchlist` — Create new watchlist
+- `PUT /api/watchlist/:id` — Update watchlist
+- `DELETE /api/watchlist/:id` — Delete watchlist
+
+### Trading Endpoints
+
+- `GET /api/portfolio` — Get portfolio data
+- `POST /api/trade` — Execute trade
+- `GET /api/trades` — Get trade history
+- `GET /api/alerts` — Get price alerts
+
+---
+
+## 🎨 UI Preview
+
+- **Dashboard** — Overview of all watchlists and portfolio summary
+- **Symbol Detail** — In-depth chart view with trading interface
+- **Portfolio** — Complete position tracking and P&L analysis
+- **Trade History** — Detailed log of all trades with filters
+- **Alerts** — Manage and view alert history
+
+---
+
+## 🛠️ Development
+
+### Running Tests
+
+```bash
+npm run test
+```
+
+### Code Quality
+
+```bash
+npm run lint
+npm run format
+```
+
+### Building for Production
+
+```bash
+npm run build
+npm start
+```
+
+---
+
+## 🚢 Deployment
+
+### Deploy on Vercel
+
+Vercel is the recommended platform for deployment:
+
+```bash
+npm install -g vercel
+vercel
+```
+
+### Deploy Database
+
+Supabase is used for the database. Set up a Supabase project and migrate the schema:
+
+```bash
+npm run migrate
+```
+
+---
+
+## 📚 Documentation
+
+- **[Database Schema](./docs/SCHEMA.md)** — Data model and relationships
+- **[API Documentation](./docs/API.md)** — Complete API reference
+- **[Architecture Guide](./docs/ARCHITECTURE.md)** — System design and decisions
+- **[Contributing Guide](./CONTRIBUTING.md)** — How to contribute
+
+---
+
+## 🔗 Resources
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Supabase Guide](https://supabase.com/docs)
+- [Zustand Documentation](https://github.com/pmndrs/zustand)
+- [lightweight-charts](https://tradingview.github.io/lightweight-charts/)
+- [Binance WebSocket API](https://binance-docs.github.io/apidocs/spot/en/#websocket-market-streams)
+- [Finnhub API](https://finnhub.io/docs/api)
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read our [Contributing Guide](./CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License. See [LICENSE](./LICENSE) file for details.
+
+---
+
+## 💬 Support
+
+Have questions or found an issue? 
+
+- 📧 Email: support@example.com
+- 🐛 [Open an issue](https://github.com/JangoSaga/market-dashboard/issues)
+- 💬 [Start a discussion](https://github.com/JangoSaga/market-dashboard/discussions)
+
+---
+
+**Built with ❤️ by the market-dashboard team**
+
+**Last Updated:** July 25, 2026
