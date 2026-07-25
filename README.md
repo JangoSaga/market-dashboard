@@ -3,7 +3,7 @@ portfolio: true
 title: Market Dashboard
 tagline: Interactive financial market analytics and visualization platform
 stack: [TypeScript, React, Next.js, Tailwind CSS]
-cover: docs/cover.png
+cover: docs/main.png
 featured: false
 slug: market-dashboard
 ---
@@ -30,6 +30,20 @@ A modern, responsive financial market dashboard built with cutting-edge web tech
 - 🌙 **Dark Mode** — Eye-friendly dark theme support
 
 ---
+
+## 📸 Screenshots
+
+- **Market dashboard:**
+
+	![Dashboard](docs/dash.png)
+
+- **Price chart:**
+
+	![Price chart](docs/graph.png)
+
+- **Cover / landing:**
+
+	![Cover image](docs/main.png)
 
 ## 🛠️ Tech Stack
 
