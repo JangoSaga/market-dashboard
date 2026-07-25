@@ -4,6 +4,7 @@ title: Market Dashboard
 tagline: Interactive financial market analytics and visualization platform
 stack: [TypeScript, React, Next.js, Tailwind CSS]
 cover: docs/main.png
+order: 1
 featured: false
 slug: market-dashboard
 ---
