@@ -2,7 +2,13 @@
 export function formatPrice(price: number): string {
   if (!Number.isFinite(price)) return "—";
   const decimals =
-    price >= 1000 ? 2 : price >= 1 ? 2 : price >= 0.01 ? 4 : 6;
+    price >= 1
+      ? 2
+      : price >= 0.01
+        ? 4
+        : price >= 0.0001
+          ? 6
+          : 8;
   return price.toLocaleString("en-US", {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,

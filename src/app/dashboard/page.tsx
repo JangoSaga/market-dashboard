@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
 
-import { ConnectionStatus } from "@/components/market/connection-status";
 import { Portfolio } from "@/components/market/portfolio";
-import { PriceTickerGrid } from "@/components/market/price-ticker-grid";
+import { Watchlist } from "@/components/market/watchlist";
 import { computePositions } from "@/lib/trading/positions";
 import { createClient } from "@/lib/supabase/server";
 
@@ -16,21 +15,24 @@ export default async function DashboardPage() {
   // source per Next.js security guidance.
   if (!user) redirect("/login");
 
-  const [{ data: profile }, { data: trades }] = await Promise.all([
-    supabase
-      .from("profiles")
-      .select("cash_balance")
-      .eq("id", user.id)
-      .single(),
-    supabase
-      .from("trades")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: true }),
-  ]);
+  const [{ data: profile }, { data: trades }, { data: watchlist }] =
+    await Promise.all([
+      supabase.from("profiles").select("cash_balance").eq("id", user.id).single(),
+      supabase
+        .from("trades")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: true }),
+      supabase
+        .from("watchlist_items")
+        .select("symbol")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: true }),
+    ]);
 
   const cash = profile?.cash_balance ?? 0;
   const positions = computePositions(trades ?? []);
+  const watchlistSymbols = (watchlist ?? []).map((w) => w.symbol);
 
   return (
     <div className="flex flex-col gap-8">
@@ -40,14 +42,7 @@ export default async function DashboardPage() {
       </div>
 
       <Portfolio cash={cash} positions={positions} />
-
-      <section className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-zinc-100">Live markets</h2>
-          <ConnectionStatus />
-        </div>
-        <PriceTickerGrid />
-      </section>
+      <Watchlist symbols={watchlistSymbols} />
     </div>
   );
 }

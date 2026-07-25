@@ -2,10 +2,12 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { ConnectionStatus } from "@/components/market/connection-status";
+import { CreateAlertForm } from "@/components/market/create-alert-form";
 import { IntervalSelector } from "@/components/market/interval-selector";
 import { PriceChart } from "@/components/market/price-chart";
 import { SymbolLivePrice } from "@/components/market/symbol-live-price";
 import { TradePanel } from "@/components/market/trade-panel";
+import { WatchlistToggle } from "@/components/market/watchlist-toggle";
 import { fetchKlines, isInterval, type Interval } from "@/lib/market/klines";
 import { DEFAULT_SYMBOLS } from "@/lib/market/symbols";
 import { positionFor } from "@/lib/trading/positions";
@@ -34,7 +36,7 @@ export default async function SymbolPage({
   const interval: Interval =
     rawInterval && isInterval(rawInterval) ? rawInterval : "1m";
 
-  const [candles, { data: trades }] = await Promise.all([
+  const [candles, { data: trades }, { data: watchRow }] = await Promise.all([
     fetchKlines(symbol, interval, 500),
     supabase
       .from("trades")
@@ -42,6 +44,12 @@ export default async function SymbolPage({
       .eq("user_id", user.id)
       .eq("symbol", symbol)
       .order("created_at", { ascending: true }),
+    supabase
+      .from("watchlist_items")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("symbol", symbol)
+      .maybeSingle(),
   ]);
 
   const position = positionFor(trades ?? [], symbol);
@@ -68,7 +76,10 @@ export default async function SymbolPage({
             <SymbolLivePrice symbol={symbol} />
           </div>
         </div>
-        <ConnectionStatus />
+        <div className="flex items-center gap-3">
+          <ConnectionStatus />
+          <WatchlistToggle symbol={symbol} initialInWatchlist={!!watchRow} />
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -85,12 +96,20 @@ export default async function SymbolPage({
           />
         </div>
 
-        <TradePanel
-          symbol={symbol}
-          base={meta.base}
-          holdingQty={position.quantity}
-          avgPrice={position.avgPrice}
-        />
+        <div className="flex flex-col gap-6">
+          <TradePanel
+            symbol={symbol}
+            base={meta.base}
+            holdingQty={position.quantity}
+            avgPrice={position.avgPrice}
+          />
+          <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-4">
+            <h3 className="mb-3 text-sm font-semibold text-zinc-100">
+              Price alert
+            </h3>
+            <CreateAlertForm symbol={symbol} />
+          </div>
+        </div>
       </div>
     </div>
   );
