@@ -5,6 +5,7 @@ export type Candle = {
   high: number;
   low: number;
   close: number;
+  volume: number;
 };
 
 export const INTERVALS = ["1m", "5m", "15m", "1h", "4h", "1d"] as const;
@@ -41,5 +42,6 @@ export async function fetchKlines(
     high: Number(k[2]),
     low: Number(k[3]),
     close: Number(k[4]),
+    volume: Number(k[5]),
   }));
 }
