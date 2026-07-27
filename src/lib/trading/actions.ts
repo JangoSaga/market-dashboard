@@ -63,3 +63,15 @@ export async function executeTrade(
     message: `${verb} ${quantity} ${base} @ ${price.toLocaleString("en-US")}`,
   };
 }
+
+/** Wipes all trades and resets cash to the starting balance (atomic RPC). */
+export async function resetPortfolio(): Promise<void> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  await supabase.rpc("reset_portfolio");
+  revalidatePath("/dashboard", "layout");
+}

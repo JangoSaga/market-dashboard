@@ -1,6 +1,7 @@
 import { Toaster } from "sonner";
 
 import { AlertMonitor } from "@/components/market/alert-monitor";
+import { ConnectionBanner } from "@/components/market/connection-banner";
 import { PriceStreamProvider } from "@/components/market/price-stream-provider";
 import { Navbar } from "@/components/navbar";
 import { createClient } from "@/lib/supabase/server";
@@ -26,6 +27,7 @@ export default async function DashboardLayout({
   return (
     <PriceStreamProvider>
       <div className="flex min-h-full flex-col">
+        <ConnectionBanner />
         <Navbar />
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
           {children}

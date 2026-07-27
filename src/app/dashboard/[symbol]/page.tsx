@@ -36,8 +36,7 @@ export default async function SymbolPage({
   const interval: Interval =
     rawInterval && isInterval(rawInterval) ? rawInterval : "1m";
 
-  const [candles, { data: trades }, { data: watchRow }] = await Promise.all([
-    fetchKlines(symbol, interval, 500),
+  const [{ data: trades }, { data: watchRow }] = await Promise.all([
     supabase
       .from("trades")
       .select("*")
@@ -51,6 +50,14 @@ export default async function SymbolPage({
       .eq("symbol", symbol)
       .maybeSingle(),
   ]);
+
+  let candles: Awaited<ReturnType<typeof fetchKlines>> = [];
+  let chartError = false;
+  try {
+    candles = await fetchKlines(symbol, interval, 500);
+  } catch {
+    chartError = true;
+  }
 
   const position = positionFor(trades ?? [], symbol);
 
@@ -88,12 +95,20 @@ export default async function SymbolPage({
             <span className="text-sm font-medium text-zinc-300">Price chart</span>
             <IntervalSelector symbol={symbol} active={interval} />
           </div>
-          <PriceChart
-            key={`${symbol}-${interval}`}
-            symbol={symbol}
-            interval={interval}
-            initialCandles={candles}
-          />
+          {chartError ? (
+            <div className="flex h-105 items-center justify-center text-center text-sm text-zinc-500">
+              Chart data is temporarily unavailable.
+              <br />
+              The live price above still updates.
+            </div>
+          ) : (
+            <PriceChart
+              key={`${symbol}-${interval}`}
+              symbol={symbol}
+              interval={interval}
+              initialCandles={candles}
+            />
+          )}
         </div>
 
         <div className="flex flex-col gap-6">

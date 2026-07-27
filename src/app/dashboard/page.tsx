@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { Portfolio } from "@/components/market/portfolio";
+import { ResetPortfolioButton } from "@/components/market/reset-portfolio-button";
 import { Watchlist } from "@/components/market/watchlist";
 import { computePositions } from "@/lib/trading/positions";
 import { createClient } from "@/lib/supabase/server";
@@ -36,9 +37,12 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div>
-        <h1 className="text-2xl font-semibold text-zinc-100">Portfolio</h1>
-        <p className="mt-1 text-sm text-zinc-400">Signed in as {user.email}</p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-semibold text-zinc-100">Portfolio</h1>
+          <p className="mt-1 text-sm text-zinc-400">Signed in as {user.email}</p>
+        </div>
+        <ResetPortfolioButton />
       </div>
 
       <Portfolio cash={cash} positions={positions} />

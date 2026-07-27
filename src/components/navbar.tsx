@@ -1,13 +1,9 @@
 import Link from "next/link";
 
+import { MobileNav } from "@/components/mobile-nav";
+import { NAV_LINKS } from "@/lib/nav";
 import { createClient } from "@/lib/supabase/server";
 import { SignOutButton } from "./sign-out-button";
-
-const NAV_LINKS = [
-  { href: "/dashboard", label: "Portfolio" },
-  { href: "/dashboard/history", label: "History" },
-  { href: "/dashboard/alerts", label: "Alerts" },
-];
 
 export async function Navbar() {
   const supabase = await createClient();
@@ -18,14 +14,15 @@ export async function Navbar() {
   return (
     <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3">
+          <MobileNav />
           <Link
             href="/dashboard"
             className="text-base font-bold tracking-tight text-white"
           >
             Market<span className="text-emerald-500">Pulse</span>
           </Link>
-          <nav className="hidden items-center gap-4 sm:flex">
+          <nav className="ml-3 hidden items-center gap-4 sm:flex">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}

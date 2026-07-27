@@ -148,6 +148,22 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      reset_portfolio: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          cash_balance: number
+          created_at: string
+          email: string | null
+          id: string
+          starting_balance: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       [_ in never]: never
