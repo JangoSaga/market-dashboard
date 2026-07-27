@@ -44,6 +44,7 @@ export default async function HistoryPage() {
                 <th className="px-4 py-2 text-right font-medium">Quantity</th>
                 <th className="px-4 py-2 text-right font-medium">Price</th>
                 <th className="px-4 py-2 text-right font-medium">Value</th>
+                <th className="px-4 py-2 text-right font-medium">Fee</th>
               </tr>
             </thead>
             <tbody>
@@ -89,6 +90,9 @@ export default async function HistoryPage() {
                     </td>
                     <td className="px-4 py-3 text-right font-mono text-zinc-300">
                       {formatUsd(value)}
+                    </td>
+                    <td className="px-4 py-3 text-right font-mono text-zinc-500">
+                      {formatUsd(Number(t.fee ?? 0))}
                     </td>
                   </tr>
                 );

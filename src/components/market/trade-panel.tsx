@@ -8,6 +8,7 @@ import {
   formatUsd,
 } from "@/lib/market/format";
 import { executeTrade, type TradeState } from "@/lib/trading/actions";
+import { FEE_RATE } from "@/lib/trading/constants";
 import { usePriceStore } from "@/store/prices";
 
 export function TradePanel({
@@ -89,6 +90,12 @@ export function TradePanel({
           <span>Est. order value</span>
           <span className="font-mono text-zinc-200">
             {price ? formatUsd(estValue) : "waiting for price…"}
+          </span>
+        </div>
+        <div className="flex justify-between text-xs text-zinc-400">
+          <span>Est. fee (0.1%)</span>
+          <span className="font-mono text-zinc-200">
+            {price ? formatUsd(estValue * FEE_RATE) : "—"}
           </span>
         </div>
 

@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { Portfolio } from "@/components/market/portfolio";
 import { ResetPortfolioButton } from "@/components/market/reset-portfolio-button";
 import { Watchlist } from "@/components/market/watchlist";
-import { computePositions } from "@/lib/trading/positions";
+import { computePositions, computeRealizedPnl } from "@/lib/trading/positions";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
@@ -32,7 +32,9 @@ export default async function DashboardPage() {
     ]);
 
   const cash = profile?.cash_balance ?? 0;
-  const positions = computePositions(trades ?? []);
+  const allTrades = trades ?? [];
+  const positions = computePositions(allTrades);
+  const realizedPnl = computeRealizedPnl(allTrades);
   const watchlistSymbols = (watchlist ?? []).map((w) => w.symbol);
 
   return (
@@ -45,7 +47,7 @@ export default async function DashboardPage() {
         <ResetPortfolioButton />
       </div>
 
-      <Portfolio cash={cash} positions={positions} />
+      <Portfolio cash={cash} positions={positions} realizedPnl={realizedPnl} />
       <Watchlist symbols={watchlistSymbols} />
     </div>
   );

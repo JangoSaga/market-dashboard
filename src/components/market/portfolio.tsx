@@ -17,9 +17,11 @@ const BASE_BY_SYMBOL = new Map(DEFAULT_SYMBOLS.map((s) => [s.symbol, s.base]));
 export function Portfolio({
   cash,
   positions,
+  realizedPnl,
 }: {
   cash: number;
   positions: Position[];
+  realizedPnl: number;
 }) {
   const tickers = usePriceStore((s) => s.tickers);
 
@@ -48,7 +50,7 @@ export function Portfolio({
 
   return (
     <section className="flex flex-col gap-4">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <SummaryCard label="Total equity" value={formatUsd(equity)} accent="text-zinc-100" />
         <SummaryCard label="Cash" value={formatUsd(cash)} accent="text-zinc-100" />
         <SummaryCard label="Holdings value" value={formatUsd(holdingsValue)} accent="text-zinc-100" />
@@ -56,6 +58,11 @@ export function Portfolio({
           label="Unrealized P&L"
           value={formatSignedUsd(totalPnl)}
           accent={pnlUp ? "text-emerald-400" : "text-red-400"}
+        />
+        <SummaryCard
+          label="Realized P&L"
+          value={formatSignedUsd(realizedPnl)}
+          accent={realizedPnl >= 0 ? "text-emerald-400" : "text-red-400"}
         />
       </div>
 

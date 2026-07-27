@@ -74,6 +74,7 @@ export type Database = {
       trades: {
         Row: {
           created_at: string
+          fee: number
           id: string
           price: number
           quantity: number
@@ -83,6 +84,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          fee?: number
           id?: string
           price: number
           quantity: number
@@ -92,6 +94,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          fee?: number
           id?: string
           price?: number
           quantity?: number
