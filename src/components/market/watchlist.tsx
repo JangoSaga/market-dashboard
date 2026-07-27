@@ -110,23 +110,28 @@ function WatchCard({
 
   return (
     <div
-      className={`rounded-xl border border-zinc-800 bg-zinc-950/60 p-4 transition-all duration-300 ${flashClass}`}
+      className={`group relative rounded-xl border border-zinc-800 bg-zinc-950/60 p-4 transition-all duration-300 hover:border-zinc-700 ${flashClass}`}
     >
-      <div className="flex items-start justify-between">
-        <Link href={`/dashboard/${symbol}`} className="group">
-          <p className="text-sm font-semibold text-zinc-100 group-hover:text-emerald-400">
-            {meta?.base ?? symbol}
-          </p>
-          <p className="text-xs text-zinc-500">{meta?.name}</p>
-        </Link>
-        <button
-          type="button"
-          onClick={onRemove}
-          aria-label={`Remove ${meta?.base ?? symbol} from watchlist`}
-          className="-mr-1 -mt-1 rounded p-1 text-zinc-600 transition hover:bg-zinc-800 hover:text-zinc-300"
-        >
-          ✕
-        </button>
+      {/* Overlay link makes the whole card clickable; the remove button sits above it. */}
+      <Link
+        href={`/dashboard/${symbol}`}
+        aria-label={`Open ${meta?.base ?? symbol} chart`}
+        className="absolute inset-0 z-10 rounded-xl"
+      />
+      <button
+        type="button"
+        onClick={onRemove}
+        aria-label={`Remove ${meta?.base ?? symbol} from watchlist`}
+        className="absolute right-2 top-2 z-20 rounded p-1 text-zinc-600 transition hover:bg-zinc-800 hover:text-zinc-300"
+      >
+        ✕
+      </button>
+
+      <div>
+        <p className="text-sm font-semibold text-zinc-100 group-hover:text-emerald-400">
+          {meta?.base ?? symbol}
+        </p>
+        <p className="text-xs text-zinc-500">{meta?.name}</p>
       </div>
 
       <div className="mt-3">
