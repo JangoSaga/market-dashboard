@@ -45,3 +45,26 @@ export async function fetchKlines(
     volume: Number(k[5]),
   }));
 }
+
+/**
+ * Fetches daily close prices for a symbol keyed by the day's UTC-midnight
+ * timestamp in ms (matching Binance 1d kline openTime). Returns an empty map on
+ * failure so callers can degrade gracefully. Server-side use.
+ */
+export async function fetchDailyCloses(
+  symbol: string,
+  startTimeMs: number,
+  limit: number,
+): Promise<Map<number, number>> {
+  const map = new Map<number, number>();
+  try {
+    const url = `${REST_BASE}/klines?symbol=${symbol}&interval=1d&startTime=${startTimeMs}&limit=${limit}`;
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) return map;
+    const raw = (await res.json()) as RawKline[];
+    for (const k of raw) map.set(k[0], Number(k[4]));
+  } catch {
+    // Return whatever we have; the equity curve carries forward last close.
+  }
+  return map;
+}

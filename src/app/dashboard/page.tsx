@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
 
+import { EquityChart } from "@/components/market/equity-chart";
 import { Portfolio } from "@/components/market/portfolio";
 import { ResetPortfolioButton } from "@/components/market/reset-portfolio-button";
 import { Watchlist } from "@/components/market/watchlist";
+import { computeEquityCurve } from "@/lib/trading/equity";
 import { computePositions, computeRealizedPnl } from "@/lib/trading/positions";
 import { createClient } from "@/lib/supabase/server";
 
@@ -18,7 +20,11 @@ export default async function DashboardPage() {
 
   const [{ data: profile }, { data: trades }, { data: watchlist }] =
     await Promise.all([
-      supabase.from("profiles").select("cash_balance").eq("id", user.id).single(),
+      supabase
+        .from("profiles")
+        .select("cash_balance, starting_balance")
+        .eq("id", user.id)
+        .single(),
       supabase
         .from("trades")
         .select("*")
@@ -32,9 +38,15 @@ export default async function DashboardPage() {
     ]);
 
   const cash = profile?.cash_balance ?? 0;
+  const startingBalance = profile?.starting_balance ?? 0;
   const allTrades = trades ?? [];
   const positions = computePositions(allTrades);
   const realizedPnl = computeRealizedPnl(allTrades);
+  const equityCurve = await computeEquityCurve(
+    allTrades,
+    startingBalance,
+    Date.now(),
+  );
   const watchlistSymbols = (watchlist ?? []).map((w) => w.symbol);
 
   return (
@@ -48,6 +60,16 @@ export default async function DashboardPage() {
       </div>
 
       <Portfolio cash={cash} positions={positions} realizedPnl={realizedPnl} />
+
+      {equityCurve.length > 1 && (
+        <section className="flex flex-col gap-3">
+          <h2 className="text-lg font-semibold text-zinc-100">Equity curve</h2>
+          <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-4">
+            <EquityChart points={equityCurve} />
+          </div>
+        </section>
+      )}
+
       <Watchlist symbols={watchlistSymbols} />
     </div>
   );
